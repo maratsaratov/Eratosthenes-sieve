@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Решето Эратосфена</title>
+   <style>
+       body {
+           font-family: Arial, sans-serif;
+           background-color: white;
+           color: black;
+           margin: 0;
+           padding: 0;
+       }
+       .header {
+           background-color: black;
+           color: white;
+           display: flex;
+           justify-content: space-between;
+           align-items: center;
+           padding: 10px;
+       }
+       .content {
+           text-align: center;
+           margin-top: 20px;
+       }
+       pre {
+           font-family: monospace;
+           white-space: pre-wrap;
+           word-wrap: break-word; 
+       }
+   </style>
+</head>
+<body>
+<div class="header">
+   <div></div>
+   <div>
+       <p style="margin-right: 10px;">{{ username }}</p>
+       <button onclick="logout()">Выход</button>
+   </div>
+</div>
+<div class="content">
+   <h1>Решето Эратосфена</h1>
+   <form method="post">
+       <input type="number" name="number" required placeholder="Введите число">
+       <button type="submit">Сгенерировать решето</button>
+   </form>
+
+   {% if image_data %}
+       <h2>Результат:</h2>
+       <img src="data:image/png;base64,{{ image_data }}" alt="Sieve Image">
+       
+       <h3>ASCII Решето:</h3>
+       <pre>{{ ascii_image }}</pre>
+   {% endif %}
+   
+   <button onclick="window.location.href='/history'">Посмотреть историю генераций</button>
+</div>
+
+<script>
+   function logout() {
+       window.location.href = '/logout';
+   }
+</script>
+</body>
+</html>
+

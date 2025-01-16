@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Решето Эратосфена</title>
+    <style>
+        body {
+            background-color: white;
+            color: black;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: black;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+        }
+        .content {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+    <body>
+        <div class="header">
+            <div></div>
+            <div>
+                <p style="margin-right: 10px;">{{ username }}</p>
+                <button onclick="logout()">Выход</button>
+            </div>
+        </div>
+
+        {% if history %}
+       <table border="1">
+           <tr><th>Число</th><th>Решето</th><th>ASCII Решето</th></tr>
+           {% for record in history %}
+               <tr>
+                   <td>{{ record[0] }}</td>
+                   <td><img src="data:image/png;base64,{{ record[1] }}" alt="Sieve Image" style="width: 160px; height: auto;"></td>
+                   <td><pre>{{ record[2] }}</pre></td>
+               </tr>
+           {% endfor %}
+       </table>
+   {% else %}
+       <p>История пуста.</p>
+   {% endif %}
+   
+   <button onclick="window.location.href='/generate_sieve'">Назад к генерации решета</button>
+</div>
+
+<script>
+   function logout() {
+       window.location.href = '/logout';
+   }
+</script>
+</body>
+</html>
