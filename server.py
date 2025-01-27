@@ -116,6 +116,10 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
+
+        if not email or not password:
+            return "Поля email и пароль должны быть заполнены."
+
         conn = sqlite3.connect('users.db')
         cursor = conn.cursor()
         cursor.execute('SELECT * FROM users WHERE email = ?', (email,))
@@ -141,6 +145,9 @@ def register():
         password = request.form['password']
         confirm_password = request.form['confirm_password']
 
+        if not email or not password or not confirm_password:
+            return "Все поля должны быть заполнены."
+
         if len(password) < 10:
             return "Пароль должен содержать не менее 10 символов."
 
@@ -157,6 +164,7 @@ def register():
 
     return render_template('register.html')
 
+
 @app.route('/menu')
 def menu():
     if 'username' not in session:
@@ -172,15 +180,27 @@ def generate_sieve():
     ascii_image_data = None
 
     if request.method == 'POST':
-        user_input = int(request.form['number'])
-        image_data = plot_sieve(user_input)
-        ascii_image_data = generate_ascii_image(image_data)
-        conn = sqlite3.connect('users.db')
-        cursor = conn.cursor()
-        cursor.execute('INSERT INTO history (user_email, number, image, ascii_image) VALUES (?, ?, ?, ?)', 
-                       (session['username'], user_input, image_data, ascii_image_data))
-        conn.commit()
-        conn.close()
+        user_input = request.form.get('number')
+
+        if not user_input:
+            return "Поле для ввода числа должно быть заполнено."
+
+        try:
+            user_input = int(user_input)
+
+            if user_input > 1000:
+                return "Введите число не более 1000."
+                
+            image_data = plot_sieve(user_input)
+            ascii_image_data = generate_ascii_image(image_data)
+            conn = sqlite3.connect('users.db')
+            cursor = conn.cursor()
+            cursor.execute('INSERT INTO history (user_email, number, image, ascii_image) VALUES (?, ?, ?, ?)', 
+                           (session['username'], user_input, image_data, ascii_image_data))
+            conn.commit()
+            conn.close()
+        except ValueError:
+            return "Введите положительное число."
 
     return render_template('generate_sieve.html', username=session['username'], image_data=image_data,
                            ascii_image=ascii_image_data)
