@@ -95,12 +95,12 @@ def plot_sieve(n):
 def generate_ascii_image(image_data):
     img = Image.open(BytesIO(base64.b64decode(image_data)))
     img = img.convert('L')
-    ascii_chars = '@%#*+=-:. '
     width, height = img.size
-    aspect_ratio = height / width
-    new_width = 100
-    new_height = int(aspect_ratio * new_width * 0.55)
+    new_width = 200
+    new_height = int(height * (new_width / width))
     img = img.resize((new_width, new_height))
+    
+    ascii_chars = '@%#*+=-:. '
     ascii_image = ''
     
     for i in range(new_height):
@@ -118,7 +118,8 @@ def login():
         password = request.form['password']
 
         if not email or not password:
-            return "Поля email и пароль должны быть заполнены."
+            error = "Поля email и пароль должны быть заполнены."
+            return render_template('login.html', error=error)
 
         conn = sqlite3.connect('users.db')
         cursor = conn.cursor()
@@ -132,11 +133,14 @@ def login():
                 session['username'] = user.email
                 return redirect(url_for('menu'))
             else:
-                return "Неправильный пароль. Попробуйте снова."
+                error = "Неправильный пароль. Попробуйте снова."
+                return render_template('login.html', error=error)
         else:
-            return "Пользователь не найден. Пройдите регистрацию."
+            error = "Пользователь не найден. Пройдите регистрацию."
+            return render_template('login.html', error=error)
 
     return render_template('login.html')
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -146,10 +150,12 @@ def register():
         confirm_password = request.form['confirm_password']
 
         if not email or not password or not confirm_password:
-            return "Все поля должны быть заполнены."
+            error = "Все поля должны быть заполнены."
+            return render_template('register.html', error=error)
 
         if len(password) < 10:
-            return "Пароль должен содержать не менее 10 символов."
+            error = "Пароль должен содержать не менее 10 символов."
+            return render_template('register.html', error=error)
 
         if password == confirm_password:
             hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
@@ -160,10 +166,10 @@ def register():
             conn.close()
             return redirect(url_for('menu'))
         else:
-            return "Пароли не совпадают. Попробуйте еще раз."
+            error = "Пароли не совпадают. Попробуйте еще раз."
+            return render_template('register.html', error=error)
 
     return render_template('register.html')
-
 
 @app.route('/menu')
 def menu():
@@ -183,14 +189,20 @@ def generate_sieve():
         user_input = request.form.get('number')
 
         if not user_input:
-            return "Поле для ввода числа должно быть заполнено."
+            error = "Поле для ввода числа должно быть заполнено."
+            return render_template('generate_sieve.html', username=session['username'], error=error)
 
         try:
             user_input = int(user_input)
 
             if user_input > 1000:
-                return "Введите число не более 1000."
-                
+                error = "Введите число не более 1000."
+                return render_template('generate_sieve.html', username=session['username'], error=error)
+
+            if user_input < 1:
+                error = "Введите положительное целое число."
+                return render_template('generate_sieve.html', username=session['username'], error=error)
+
             image_data = plot_sieve(user_input)
             ascii_image_data = generate_ascii_image(image_data)
             conn = sqlite3.connect('users.db')
@@ -200,8 +212,9 @@ def generate_sieve():
             conn.commit()
             conn.close()
         except ValueError:
-            return "Введите положительное число."
-
+            error = "Введите целое число."
+            return render_template('generate_sieve.html', username=session['username'], error=error)
+        
     return render_template('generate_sieve.html', username=session['username'], image_data=image_data,
                            ascii_image=ascii_image_data)
 
