@@ -8,6 +8,11 @@
 </head>
 <body>
     <h1>Регистрация</h1>
+
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    
     <form action="/register" method="post">
         <label for="email">Email:</label><br>
         <input type="email" id="email" name="email"><br>
