@@ -42,16 +42,23 @@
 <div class="content">
    <h1>Решето Эратосфена</h1>
    <form method="post">
+       <p>Максимальное возможное вводимое число - 1000</p>
        <input type="number" name="number" required placeholder="Введите число">
        <button type="submit">Сгенерировать решето</button>
    </form>
+
+   {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
 
    {% if image_data %}
        <h2>Результат:</h2>
        <img src="data:image/png;base64,{{ image_data }}" alt="Sieve Image">
        
        <h3>ASCII Решето:</h3>
-       <pre>{{ ascii_image }}</pre>
+       <pre style="font-family: monospace; font-size: 12px; white-space: pre-wrap;">
+        {{ ascii_image }} </pre>
+    
    {% endif %}
    
    <button onclick="window.location.href='/history'">Посмотреть историю генераций</button>
