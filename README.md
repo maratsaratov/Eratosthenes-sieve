@@ -1,4 +1,3 @@
-```markdown
 # Eratosthenes-sieve
 
 Web version of the "Sieve of Eratosthenes" algorithm for visualizing the process of finding prime numbers.
@@ -43,7 +42,7 @@ Eratosthenes-sieve/
 1. Ensure Python 3.x is installed
 2. Install required dependencies:
    ```bash
-   pip install flask numpy matplotlib pillow
+   pip install requirements.txt
    ```
 3. Run the application:
    ```bash
@@ -83,4 +82,3 @@ The application uses SQLite database with the following tables:
 ## Author
 
 The project is developed as a web implementation of a classical mathematical algorithm for educational purposes.
-```
